@@ -150,7 +150,7 @@ function PokemonDetail() {
   const [isVoted, setIsVoted] = useState(false);
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/api/pokemon/${id}`, { withCredentials: true })
+    axios.get(`/api/pokemon/${id}`, { withCredentials: true })
       .then(res => {
         setPokemon(res.data);
         setIsVoted(res.data.is_voted);
@@ -160,7 +160,7 @@ function PokemonDetail() {
 
   const handleVote = async () => {
     try {
-      const res = await axios.post(`http://localhost:5000/api/pokemon/${id}/vote`, {}, { withCredentials: true });
+      const res = await axios.post(`/api/pokemon/${id}/vote`, {}, { withCredentials: true });
       setIsVoted(res.data.is_voted);
       setPokemon(prev => ({
         ...prev,
