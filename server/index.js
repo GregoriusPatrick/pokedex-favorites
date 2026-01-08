@@ -46,23 +46,40 @@ app.get('/api/pokemon', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
+        const search = req.query.search || '';
         const offset = (page - 1) * limit;
 
-        // Query untuk mengambil data pokemon + jumlah votenya
+        // Query params array (Limit dan Offset selalu ada di index 0 dan 1)
+        const queryParams = [limit, offset];
+
+        // Jika ada search, tambahkan parameter ke-3
+        if (search) {
+            queryParams.push(`%${search}%`);
+        }
+
         const query = `
       SELECT p.id, p.name, p.type_1, p.type_2, p.sprite_front, p.artwork,
              COUNT(v.id)::int as vote_count
       FROM pokemon p
       LEFT JOIN votes v ON p.id = v.pokemon_id
+      ${search ? 'WHERE p.name ILIKE $3' : ''}
       GROUP BY p.id
       ORDER BY p.id ASC
       LIMIT $1 OFFSET $2
     `;
 
-        const result = await pool.query(query, [limit, offset]);
+        const result = await pool.query(query, queryParams);
 
-        // Hitung total pokemon untuk keperluan pagination frontend
-        const totalResult = await pool.query('SELECT COUNT(*) FROM pokemon');
+        // Hitung total pokemon (dengan filter search jika ada)
+        let countQuery = 'SELECT COUNT(*) FROM pokemon p';
+        let countParams = [];
+
+        if (search) {
+            countQuery += ' WHERE p.name ILIKE $1';
+            countParams.push(`%${search}%`);
+        }
+
+        const totalResult = await pool.query(countQuery, countParams);
         const totalItems = parseInt(totalResult.rows[0].count);
 
         res.json({
