@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "https://pokedex-favorites-one.vercel.app/api/$1"
+        }
+    ]
+}
