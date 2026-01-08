@@ -171,3 +171,6 @@ app.post('/api/pokemon/:id/vote', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Server berjalan di http://localhost:${port}`);
 });
+
+
+module.exports = app;
