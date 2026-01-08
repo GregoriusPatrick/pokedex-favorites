@@ -16,20 +16,16 @@ const port = process.env.PORT || 5000;
 //     port: process.env.DB_PORT,
 // });
 
-const pool = new Pool({
-    // user: process.env.DB_USER,
-    // host: process.env.DB_HOST,
-    // database: process.env.DB_NAME,
-    // password: process.env.DB_PASSWORD,
-    // port: process.env.DB_PORT,
+const { Pool } = require('pg');
 
+const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    // Tambahan WAJIB untuk Supabase/Vercel:
     ssl: {
-        rejectUnauthorized: false,
-    },
+        rejectUnauthorized: false // <--- BARIS AJAIB INI PENTING!
+    }
 });
 
+module.exports = pool;
 // === 2. MIDDLEWARE (Perantara) ===
 // Agar frontend (port 5173 nanti) boleh akses backend ini
 app.use(cors({

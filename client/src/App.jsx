@@ -59,7 +59,7 @@ function PokemonList() {
       try {
         setLoading(true);
         // Mengambil 21 pokemon agar pas dibagi 3 (7 baris)
-        const response = await axios.get(`http://localhost:5000/api/pokemon?page=${page}&limit=21&search=${searchTerm}`, {
+        const response = await axios.get(`/api/pokemon?page=${page}&limit=21&search=${searchTerm}`, {
           withCredentials: true
         });
         setPokemons(response.data.data);
